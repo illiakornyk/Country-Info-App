@@ -1,20 +1,42 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpStatus,
+  Param,
+  ParseEnumPipe,
+} from '@nestjs/common';
 import { CountryService } from './country.service';
-import { ApiProperty } from '@nestjs/swagger';
+import { CountryCode } from './enums/country-code.enum';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { CountryExtendedInfo } from './classes/country-extended-info';
+import { AvailableCountry } from './classes/available-country';
 
-@Controller('country')
+@ApiTags('countries')
+@Controller('countries')
 export class CountryController {
   constructor(private readonly countryService: CountryService) {}
 
-  @ApiProperty()
   @Get('available')
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Returns a list of available countries',
+    type: () => AvailableCountry,
+    isArray: true,
+  })
   getAvailableCountries() {
     return this.countryService.getAvailableCountries();
   }
 
-  @ApiProperty()
   @Get(':countryCode')
-  getCountryInfo(@Param('countryCode') countryCode: string) {
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Returns country info',
+    type: () => CountryExtendedInfo,
+  })
+  getCountryInfo(
+    @Param('countryCode', new ParseEnumPipe(CountryCode))
+    countryCode: CountryCode,
+  ) {
     return this.countryService.getCountryInfo(countryCode);
   }
 }

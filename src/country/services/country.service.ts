@@ -1,22 +1,33 @@
 import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import axios, { AxiosError } from 'axios';
-import { CountryCode } from './enums/country-code.enum';
-import { CountryExtendedInfo } from './classes/country-extended-info';
-import { AvailableCountry } from './classes/available-country';
-import { CountryInfo } from './classes/country-info';
-import { PopulationData } from './classes/population-data';
+import { AvailableCountry } from '../classes/available-country';
+import { CountryExtendedInfo } from '../classes/country-extended-info';
+import { CountryInfo } from '../classes/country-info';
+import { PopulationData } from '../classes/population-data';
+import { CountryCode } from '../enums/country-code.enum';
 
 @Injectable()
 export class CountryService {
+  private readonly nagerApiBaseUrl: string;
+  private readonly countriesNowApiUrl: string;
+
+  constructor(private readonly configService: ConfigService) {
+    this.nagerApiBaseUrl = this.configService.get<string>('NAGER_DATE_API_URL');
+    this.countriesNowApiUrl = this.configService.get<string>(
+      'COUNTRIES_NOW_API_URL',
+    );
+  }
+
   async getAvailableCountries(): Promise<AvailableCountry[]> {
     const { data }: { data: AvailableCountry[] } = await axios.get(
-      `${process.env.NAGER_DATE_API_URL}/AvailableCountries`,
+      `${this.nagerApiBaseUrl}/AvailableCountries`,
     );
     return data;
   }
 
   async getCountryInfo(countryCode: CountryCode): Promise<CountryExtendedInfo> {
-    const nagerApiUrl = `${process.env.NAGER_DATE_API_URL}/CountryInfo/${countryCode}`;
+    const nagerApiUrl = `${this.nagerApiBaseUrl}/CountryInfo/${countryCode}`;
 
     let countryDetails: CountryInfo;
     try {
@@ -55,7 +66,7 @@ export class CountryService {
   private async fetchPopulationData(
     countryName: string,
   ): Promise<PopulationData[]> {
-    const apiUrl = `${process.env.COUNTRIES_NOW_API_URL}/countries/population`;
+    const apiUrl = `${this.countriesNowApiUrl}/countries/population`;
     try {
       const { data } = await axios.post(apiUrl, { country: countryName });
       const populationCounts: PopulationData[] = data.data.populationCounts;
@@ -66,7 +77,7 @@ export class CountryService {
   }
 
   private async fetchFlagUrl(countryName: string): Promise<string> {
-    const apiUrl = `${process.env.COUNTRIES_NOW_API_URL}/countries/flag/images`;
+    const apiUrl = `${this.countriesNowApiUrl}/countries/flag/images`;
     try {
       const { data } = await axios.post(apiUrl, { country: countryName });
       const flagUrl: string = data.data.flag;

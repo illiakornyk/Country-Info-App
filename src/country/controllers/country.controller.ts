@@ -5,11 +5,11 @@ import {
   Param,
   ParseEnumPipe,
 } from '@nestjs/common';
-import { CountryService } from './country.service';
-import { CountryCode } from './enums/country-code.enum';
+import { CountryService } from '../services/country.service';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
-import { CountryExtendedInfo } from './classes/country-extended-info';
-import { AvailableCountry } from './classes/available-country';
+import { AvailableCountry } from '../classes/available-country';
+import { CountryExtendedInfo } from '../classes/country-extended-info';
+import { CountryCode } from '../enums/country-code.enum';
 
 @ApiTags('countries')
 @Controller('countries')

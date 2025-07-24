@@ -1,0 +1,6 @@
+export const USER_CONSTANTS = {
+  DOMAIN: {
+    MAX_HOLIDAY_YEAR: 2100,
+    MIN_HOLIDAY_YEAR: 1970,
+  },
+};

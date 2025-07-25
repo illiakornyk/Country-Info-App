@@ -84,9 +84,11 @@ Database schema changes are managed through TypeORM migrations. This ensures tha
 
 After you make a change to a TypeORM entity (e.g., add a new column), you must generate a new migration file.
 
-````bash
+```bash
 # The '--' separates npm arguments from the command's arguments
-npm run typeorm:generate -- -n AddDescriptionToEvent```
+npm run typeorm:generate -- -n AddDescriptionToEvent
+```
+
 Replace `AddDescriptionToEvent` with a descriptive name for your change. This command will compare your entities with the database schema and create a new migration file in `src/typeorm/migrations/`.
 
 ### Running Migrations
@@ -95,7 +97,7 @@ To apply all pending migrations, use the `run` command. This is the same command
 
 ```bash
 npm run typeorm:run
-````
+```
 
 ### Reverting a Migration
 
